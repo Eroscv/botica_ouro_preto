@@ -410,26 +410,18 @@ section{ padding:120px 0; position:relative; }
 .solucoes-hint{ font-size:14px; color:#8AB4E8; margin-top:6px; }
 .solucoes-carousel-wrap{ position:relative; margin-top:44px; }
 .solucoes-track{
-  display:flex; align-items:center; gap:18px; overflow-x:auto; overflow-y:visible; scroll-snap-type:x proximity;
-  padding:44px 4px 34px; margin:0 -4px; cursor:grab; scrollbar-width:none;
+  display:flex; align-items:center; gap:18px; overflow-x:auto; overflow-y:visible; scroll-behavior:auto;
+  padding:60px 4px 34px; margin:0 -4px; cursor:grab; scrollbar-width:none;
   -webkit-user-select:none; user-select:none;
 }
 .solucoes-track::-webkit-scrollbar{ display:none; }
-.solucoes-track.dragging{ cursor:grabbing; scroll-snap-type:none; }
+.solucoes-track.dragging{ cursor:grabbing; }
 .solucoes-slide{
   position:relative; flex:0 0 auto; width:230px; aspect-ratio:3/4;
-  border-radius:20px; overflow:hidden; scroll-snap-align:start;
+  border-radius:20px; overflow:hidden;
   box-shadow:0 20px 40px -20px rgba(0,0,0,.6);
-  transition:transform .3s var(--ease);
+  transform-origin:50% 120%; will-change:transform;
 }
-/* Curva leve: cards das pontas descem e giram, o do meio fica mais alto — efeito "leque" */
-.solucoes-slide:nth-child(6n+1){ transform:translateY(26px) rotate(-6deg); }
-.solucoes-slide:nth-child(6n+2){ transform:translateY(10px) rotate(-3deg); }
-.solucoes-slide:nth-child(6n+3){ transform:translateY(0) rotate(0deg); }
-.solucoes-slide:nth-child(6n+4){ transform:translateY(0) rotate(0deg); }
-.solucoes-slide:nth-child(6n+5){ transform:translateY(10px) rotate(3deg); }
-.solucoes-slide:nth-child(6n+6){ transform:translateY(26px) rotate(6deg); }
-.solucoes-slide:hover{ transform:translateY(-6px) rotate(0deg) scale(1.03); z-index:3; }
 .solucoes-slide img{ width:100%; height:100%; object-fit:cover; pointer-events:none; }
 .solucoes-slide::after{
   content:''; position:absolute; inset:0;
@@ -1474,15 +1466,69 @@ document.querySelectorAll('.faq-item').forEach((item) => {
   });
 });
 
-// ---------- Soluções: carrossel arrastável ----------
+// ---------- Soluções: carrossel infinito em arco ----------
 const solucoesTrack = document.getElementById('solucoesTrack');
 if (solucoesTrack) {
   const wrap = solucoesTrack.closest('.solucoes-carousel-wrap');
   const prevBtn = wrap.querySelector('.solucoes-arrow.prev');
   const nextBtn = wrap.querySelector('.solucoes-arrow.next');
-  const step = () => (solucoesTrack.querySelector('.solucoes-slide')?.offsetWidth || 230) + 18;
-  prevBtn.addEventListener('click', () => solucoesTrack.scrollBy({ left: -step(), behavior: 'smooth' }));
-  nextBtn.addEventListener('click', () => solucoesTrack.scrollBy({ left: step(), behavior: 'smooth' }));
+
+  const originalSlides = Array.from(solucoesTrack.children);
+  const SETS = 3;
+  const frag = document.createDocumentFragment();
+  for (let s = 0; s < SETS; s++) {
+    originalSlides.forEach(slide => frag.appendChild(slide.cloneNode(true)));
+  }
+  solucoesTrack.innerHTML = '';
+  solucoesTrack.appendChild(frag);
+  const allSlides = Array.from(solucoesTrack.querySelectorAll('.solucoes-slide'));
+
+  function setWidth() { return solucoesTrack.scrollWidth / SETS; }
+
+  function centerOnMiddleSet() {
+    solucoesTrack.scrollLeft = setWidth();
+  }
+
+  function updateArc() {
+    const trackRect = solucoesTrack.getBoundingClientRect();
+    const centerX = trackRect.left + trackRect.width / 2;
+    const half = trackRect.width / 2 || 1;
+    allSlides.forEach(slide => {
+      const r = slide.getBoundingClientRect();
+      const slideCenter = r.left + r.width / 2;
+      const norm = Math.max(-1.5, Math.min(1.5, (slideCenter - centerX) / half));
+      const angle = norm * 9;
+      const lift = Math.abs(norm) * 20;
+      const scale = 1 - Math.min(Math.abs(norm), 1) * 0.09;
+      slide.style.transform = `translateY(${lift}px) rotate(${angle}deg) scale(${scale})`;
+    });
+  }
+
+  function handleLoop() {
+    const w = setWidth();
+    if (solucoesTrack.scrollLeft < w * 0.5) {
+      solucoesTrack.scrollLeft += w;
+    } else if (solucoesTrack.scrollLeft > w * 1.5) {
+      solucoesTrack.scrollLeft -= w;
+    }
+  }
+
+  let ticking = false;
+  solucoesTrack.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => { updateArc(); handleLoop(); ticking = false; });
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', () => { centerOnMiddleSet(); updateArc(); });
+  window.addEventListener('load', () => { centerOnMiddleSet(); updateArc(); });
+  requestAnimationFrame(() => { centerOnMiddleSet(); updateArc(); });
+  setTimeout(() => { centerOnMiddleSet(); updateArc(); }, 300);
+
+  const slideStep = () => (allSlides[0] ? allSlides[0].getBoundingClientRect().width + 18 : 230);
+  prevBtn.addEventListener('click', () => solucoesTrack.scrollBy({ left: -slideStep(), behavior: 'smooth' }));
+  nextBtn.addEventListener('click', () => solucoesTrack.scrollBy({ left: slideStep(), behavior: 'smooth' }));
 
   let isDown = false, startX = 0, startScroll = 0;
   solucoesTrack.addEventListener('pointerdown', (e) => {
