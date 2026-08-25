@@ -277,11 +277,6 @@ section{ padding:100px 0; position:relative; }
 .historia-copy2 .lede{ margin-bottom:16px; }
 .historia-copy2 .btn{ margin-top:12px; }
 .historia-photos{ position:relative; padding:30px 10px 40px; }
-.historia-photos::before{
-  content:''; position:absolute; inset:0; z-index:0;
-  background:radial-gradient(circle at 30% 20%, rgba(184,134,46,.14), transparent 55%),
-             radial-gradient(circle at 75% 80%, rgba(47,92,138,.10), transparent 55%);
-}
 .hp{
   position:relative; border-radius:20px; overflow:hidden; aspect-ratio:3/2;
   box-shadow:0 30px 54px -22px rgba(15,26,48,.34); border:7px solid var(--branco);
@@ -369,10 +364,11 @@ section{ padding:100px 0; position:relative; }
 .testi-card .quote-mark{
   position:absolute; top:18px; right:18px; width:30px; height:30px; color:rgba(184,134,46,.18);
 }
-.testi-card.featured{ background:linear-gradient(160deg, var(--pergaminho-2), #E6EEF9); border-color:rgba(184,134,46,.4); }
+.testi-card.featured{ background:var(--branco); border-color:rgba(184,134,46,.4); }
 .testi-card.featured:hover{ transform:translateY(-8px); }
-.testi-badge{
-  position:absolute; top:-13px; left:20px; background:var(--verde); color:var(--ouro-claro);
+.testi-card .testi-badge{
+  position:absolute; top:-13px; left:50%; transform:translateX(-50%); white-space:nowrap;
+  background:var(--verde); color:var(--branco);
   font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:5px 12px; border-radius:99px;
   font-variation-settings:'wght' 600;
 }
