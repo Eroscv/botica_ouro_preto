@@ -187,6 +187,12 @@ h1,h2,h3{ font-weight:400; }
 .faq-answer{ max-height:0; overflow:hidden; transition:max-height .35s var(--ease); background:var(--pergaminho); }
 .faq-answer p{ padding:0 20px 18px; font-size:13.5px; color:var(--tinta-suave); }
 .faq-item.open .faq-answer{ max-height:200px; }
+.faq-item.beneficios.open .faq-answer{ max-height:340px; }
+.beneficios-list{ display:flex; flex-direction:column; gap:12px; padding:2px 20px 18px; }
+.beneficio-item{ display:flex; align-items:flex-start; gap:10px; }
+.beneficio-item .icon{ width:18px; height:18px; color:var(--ouro); flex:none; margin-top:2px; }
+.beneficio-item strong{ display:block; font-size:13px; font-variation-settings:'wght' 600; color:var(--verde); margin-bottom:2px; }
+.beneficio-item span{ font-size:12.5px; color:var(--tinta-suave); line-height:1.4; }
 
 /* ============ SEÇÃO — COMENTÁRIOS ============ */
 .testi-section{ background:var(--branco); padding:60px 0 90px; }
@@ -401,6 +407,44 @@ footer{ background:var(--verde); color:#C7D3C4; padding:56px 0 24px; }
         </div>
 
         <div class="faq-list">
+          <div class="faq-item beneficios">
+            <button class="faq-question" type="button">
+              <span>Benefícios do produto</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="beneficios-list">
+                <div class="beneficio-item">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a5 5 0 0 0-5 5c0 2 1 3 1 5a4 4 0 0 0 8 0c0-2 1-3 1-5a5 5 0 0 0-5-5Z"/><path d="M9 21h6"/></svg>
+                  <div>
+                    <strong>Melhora a memória</strong>
+                    <span>Melhora a memória e o foco</span>
+                  </div>
+                </div>
+                <div class="beneficio-item">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6l1 4-3 3h-2L8 7l1-4Z"/><path d="M9.5 10 6 20h12l-3.5-10"/></svg>
+                  <div>
+                    <strong>Protege o sistema nervoso</strong>
+                    <span>Cuida da proteção do sistema nervoso</span>
+                  </div>
+                </div>
+                <div class="beneficio-item">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <div>
+                    <strong>Saúde dos olhos</strong>
+                    <span>Cuida da saúde dos olhos</span>
+                  </div>
+                </div>
+                <div class="beneficio-item">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 12.5 11 15l4-5"/></svg>
+                  <div>
+                    <strong>Reduz a inflamação</strong>
+                    <span>Reduz a inflamação geral</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="faq-item">
             <button class="faq-question" type="button">
               <span>Sobre a fórmula</span>
